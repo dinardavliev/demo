@@ -1,0 +1,21 @@
+- name: Create dir for configs 
+  file:
+    path: "{{ item }}"
+    state: directory
+  loop:
+   - /opt/nginx/conf.d
+   - /opt/nginx/html
+
+- name: Copy configs
+  template:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+  loop:
+   - { src: './roles/web/templates/default.conf', dest: '/opt/nginx/conf.d'}
+   - { src: './roles/web/templates/index.html', dest: '/opt/nginx/html'}
+
+- name: Run docker container
+  shell: |
+   docker run -d -p 80:80 -v /opt/nginx/html:/usr/share/nginx/html \
+   -v /opt/nginx/conf.d:/etc/nginx/conf.d \
+   nginx

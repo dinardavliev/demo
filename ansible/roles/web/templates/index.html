@@ -1,0 +1,9 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Hello</title>
+    </head>
+    <body>
+        <p>This is a web server running on {{ hostvars[groups['web'][0]].env }}.</p>
+    </body>
+</html>

@@ -1,0 +1,30 @@
+ - name: Install packages
+   apt:
+     update_cache: yes
+     name: 
+     - unzip
+     - docker.io
+
+ - name: Start docker engine
+   shell: |
+    systemctl start docker
+    systemctl enable docker
+
+ - name: Create users
+   user:
+     name: "{{ item }}"
+     shell: /bin/bash
+   loop:
+    - "fred"
+    - "mark"
+    - "adam"
+
+ - name: Add ssh keys
+   authorized_key:
+     user: "{{ item.username }}"
+     state: present
+     key: "{{ item.key }}"
+   loop:
+    - { username: 'fred', key: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAICn2jLmrDKYwt1zouEjyAwdItBJ2A2MyULwLr1IbF5rz'}
+    - { username: 'mark', key: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIBQh0DIHOIs4ZBok6F8I2JmZGcdu6NPS8R7cY5ndQaID'}
+    - { username: 'adam', key: 'ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIPY89d+z8ZjNPuqNUJ/Ny3X4PxDGz1LAWzSeMWBD1iwG'}

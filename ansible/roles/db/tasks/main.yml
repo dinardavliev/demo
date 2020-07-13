@@ -1,0 +1,36 @@
+- name: Install postgres  
+  include_role:
+   name: anxs.postgresql
+- name: Create dir for dumps 
+  file:
+    path: /opt/postgres
+    state: directory
+
+- name: Download sql dumps
+  get_url:
+    url: "{{ item.url }}"
+    dest: "{{ item.dest }}"
+    mode: u=rwX,g=rwX,o=rwX
+    force: true
+  loop:
+  - { url: 'https://edu.postgrespro.ru/demo-small.zip', dest: '/opt/postgres/small.zip' }
+  - { url: 'https://edu.postgrespro.ru/demo-medium.zip', dest: '/opt/postgres/medium.zip' }
+  - { url: 'https://edu.postgrespro.ru/demo-big.zip', dest: '/opt/postgres/big.zip' }
+
+- name: Extract dumps
+  unarchive:
+    remote_src: true
+    src: "{{ item }}"
+    dest: /opt/postgres
+  loop:
+    - "/opt/postgres/small.zip"
+    - "/opt/postgres/medium.zip"
+    - "/opt/postgres/big.zip"
+
+- name: Restore DBs
+  shell: |
+   psql -d dev -f /opt/postgres/demo-small-*.sql
+   psql -d stage -f /opt/postgres/demo-medium-*.sql
+   psql -d big -f /opt/postgres/demo-big-*.sql
+  become: yes
+  become_user: postgres

@@ -1,0 +1,7 @@
+postgresql_version: 11
+postgresql_admin_user: "postgres"
+
+postgresql_databases:
+  - name: dev
+  - name: stage
+  - name: big
