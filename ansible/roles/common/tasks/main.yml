@@ -4,6 +4,17 @@
      name: 
      - unzip
      - docker.io
+   when: ansible_distribution == 'Ubuntu'
+
+ - name: Install packages
+   apt:
+     update_cache: yes
+     name: 
+     - unzip
+     - docker-ce 
+     - docker-ce-cli 
+     - containerd.io
+   when: ansible_distribution == 'CentOS'   
 
  - name: Start docker engine
    shell: |
